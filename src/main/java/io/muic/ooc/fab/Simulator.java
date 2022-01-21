@@ -24,8 +24,8 @@ public class Simulator {
     private static final double RABBIT_CREATION_PROBABILITY = 0.08;
 
     // Lists of animals in the field.
-    private List<Rabbit> rabbits;
-    private List<Fox> foxes;
+    private List<Animal> animals;
+    private List<Animal> foxes;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -56,14 +56,15 @@ public class Simulator {
             width = DEFAULT_WIDTH;
         }
 
-        rabbits = new ArrayList<>();
+        animals = new ArrayList<>();
         foxes = new ArrayList<>();
         field = new Field(depth, width);
 
         // Create a view of the state of each location in the field.
         view = new SimulatorView(depth, width);
-        view.setColor(Rabbit.class, Color.ORANGE);
-        view.setColor(Fox.class, Color.BLUE);
+        for (AnimalType animalType : AnimalType.values()) {
+            view.setColor(animalType.getAnimalClass(), animalType.getColor());
+        }
         view.addWindowListener(new WindowListener() {
             @Override
             public void windowOpened(WindowEvent e) {
@@ -128,31 +129,23 @@ public class Simulator {
         step++;
 
         // Provide space for newborn rabbits.
-        List<Rabbit> newRabbits = new ArrayList<>();
-        // Let all rabbits act.
-        for (Iterator<Rabbit> it = rabbits.iterator(); it.hasNext();) {
-            Rabbit rabbit = it.next();
-            rabbit.run(newRabbits);
-            if (!rabbit.isAlive()) {
-                it.remove();
-            }
-        }
-
-        // Provide space for newborn foxes.
-        List<Fox> newFoxes = new ArrayList<>();
-        // Let all foxes act.
-        for (Iterator<Fox> it = foxes.iterator(); it.hasNext();) {
-            Fox fox = it.next();
-            fox.hunt(newFoxes);
-            if (!fox.isAlive()) {
+        List<Animal> newAnimals = new ArrayList<>();
+        // Let all animals act.
+        for (Iterator<Animal> it = animals.iterator(); it.hasNext();) {
+            Animal animal = it.next();
+            animal.act(newAnimals);
+//            if(animal.getClass().equals(Rabbit.class)) {
+//                (Rabbit) animal.run(newAnimals);
+//            } else if(animal.getClass().equals(Fox.class)){
+//                (Fox) animal.hunt(newAnimals);
+//            }
+            if (!animal.isAlive()) {
                 it.remove();
             }
         }
 
         // Add the newly born foxes and rabbits to the main lists.
-        rabbits.addAll(newRabbits);
-        foxes.addAll(newFoxes);
-
+        animals.addAll(newAnimals);
         view.showStatus(step, field);
     }
 
@@ -161,8 +154,7 @@ public class Simulator {
      */
     public void reset() {
         step = 0;
-        rabbits.clear();
-        foxes.clear();
+        animals.clear();
         populate();
 
         // Show the starting state in the view.
@@ -177,16 +169,16 @@ public class Simulator {
         field.clear();
         for (int row = 0; row < field.getDepth(); row++) {
             for (int col = 0; col < field.getWidth(); col++) {
-                if (RANDOM.nextDouble() <= FOX_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Fox fox = new Fox(true, field, location);
-                    foxes.add(fox);
-                } else if (RANDOM.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Rabbit rabbit = new Rabbit(true, field, location);
-                    rabbits.add(rabbit);
+                double random = RANDOM.nextDouble();
+                double cumulativeProbability = 0;
+                for(AnimalType animalType: AnimalType.values()) {
+                    cumulativeProbability += animalType.getProbability();
+                    if (random <= cumulativeProbability) {
+                        Location location = new Location(row, col);
+                        Animal animal = AnimalFactory.createAnimal(animalType, true, field, location);
+                        animals.add(animal);
+                    }
                 }
-                // else leave the location empty.
             }
         }
     }

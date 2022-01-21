@@ -134,4 +134,6 @@ public abstract class Animal {
             newRabbits.add(young);
         }
     }
+
+    public abstract void act(List<Animal> newAnimals);
 }
