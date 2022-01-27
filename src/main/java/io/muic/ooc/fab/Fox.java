@@ -78,6 +78,15 @@ public class Fox extends Animal {
         return MAX_LITTER_SIZE;
     }
 
+    @Override
+    protected int getMaxAge() {
+        return MAX_AGE;
+    }
+
+    @Override
+    protected int getBreedingAge() {
+        return BREEDING_AGE;
+    }
 
     /**
      * Make this fox more hungry. This could result in the fox's death.
@@ -129,22 +138,5 @@ public class Fox extends Animal {
             Fox young = new Fox(false, getField(), loc);
             newFoxes.add(young);
         }
-    }
-
-    /**
-     * A fox can breed if it has reached the breeding age.
-     */
-    private boolean canBreed() {
-        return getAge() >= BREEDING_AGE;
-    }
-
-    @Override
-    protected int getMaxAge() {
-        return MAX_AGE;
-    }
-
-    @Override
-    protected int getBreedingAge() {
-        return BREEDING_AGE;
     }
 }

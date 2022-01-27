@@ -9,7 +9,6 @@ import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.awt.Color;
 
 public class Simulator {
 
@@ -18,14 +17,13 @@ public class Simulator {
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
-    // The probability that a rabbit will be created in any given position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
+//    // The probability that a fox will be created in any given grid position.
+//    private static final double FOX_CREATION_PROBABILITY = 0.02;
+//    // The probability that a rabbit will be created in any given position.
+//    private static final double RABBIT_CREATION_PROBABILITY = 0.08;
 
     // Lists of animals in the field.
     private List<Animal> animals;
-    private List<Animal> foxes;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -57,7 +55,6 @@ public class Simulator {
         }
 
         animals = new ArrayList<>();
-        foxes = new ArrayList<>();
         field = new Field(depth, width);
 
         // Create a view of the state of each location in the field.
@@ -134,11 +131,6 @@ public class Simulator {
         for (Iterator<Animal> it = animals.iterator(); it.hasNext();) {
             Animal animal = it.next();
             animal.act(newAnimals);
-//            if(animal.getClass().equals(Rabbit.class)) {
-//                (Rabbit) animal.run(newAnimals);
-//            } else if(animal.getClass().equals(Fox.class)){
-//                (Fox) animal.hunt(newAnimals);
-//            }
             if (!animal.isAlive()) {
                 it.remove();
             }
@@ -177,6 +169,7 @@ public class Simulator {
                         Location location = new Location(row, col);
                         Animal animal = AnimalFactory.createAnimal(animalType, true, field, location);
                         animals.add(animal);
+                        break;
                     }
                 }
             }

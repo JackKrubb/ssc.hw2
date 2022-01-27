@@ -17,8 +17,6 @@ public class Rabbit extends Animal {
     // A shared random number generator to control breeding.
     private static final Random RANDOM = new Random();
 
-    // Individual characteristics (instance fields).
-
     /**
      * Create a new rabbit. A rabbit may be created with age zero (a new born)
      * or with a random age.
@@ -91,14 +89,5 @@ public class Rabbit extends Animal {
             Rabbit young = new Rabbit(false, getField(), loc);
             newRabbits.add(young);
         }
-    }
-
-    /**
-     * A rabbit can breed if it has reached the breeding age.
-     *
-     * @return true if the rabbit can breed, false otherwise.
-     */
-    private boolean canBreed() {
-        return getAge() >= BREEDING_AGE;
     }
 }

@@ -17,15 +17,21 @@ public abstract class Animal {
     // A shared random number generator to control breeding.
     private static final Random RANDOM = new Random();
 
-    protected abstract int getMaxAge();
-
-    protected abstract int getBreedingAge();
-
     public Animal(boolean randomAge, Field field, Location location) {
         this.field = field;
         setLocation(location);
 
     }
+
+    protected abstract int getMaxAge();
+
+    protected abstract int getBreedingAge();
+
+    protected abstract double getBreedingProbability();
+
+    protected abstract int getMaxLitterSize();
+
+    public abstract void act(List<Animal> newAnimals);
 
     public void setAge(int age) {
         this.age = age;
@@ -58,7 +64,7 @@ public abstract class Animal {
         }
     }
 
-    private boolean canBreed() {
+    protected boolean canBreed() {
         return getAge() >= getBreedingAge();
     }
 
@@ -112,28 +118,4 @@ public abstract class Animal {
         }
         return births;
     }
-
-    protected abstract double getBreedingProbability();
-
-    protected abstract int getMaxLitterSize();
-
-    /**
-     * Check whether or not this rabbit is to give birth at this step. New
-     * births will be made into free adjacent locations.
-     *
-     * @param newRabbits A list to return newly born rabbits.
-     */
-    private void giveBirth(List<Rabbit> newRabbits) {
-        // New rabbits are born into adjacent locations.
-        // Get a list of adjacent free locations.
-        List<Location> free = field.getFreeAdjacentLocations(location);
-        int births = breed();
-        for (int b = 0; b < births && free.size() > 0; b++) {
-            Location loc = free.remove(0);
-            Rabbit young = new Rabbit(false, field, loc);
-            newRabbits.add(young);
-        }
-    }
-
-    public abstract void act(List<Animal> newAnimals);
 }
